@@ -1,6 +1,8 @@
 'use strict';
 const allAnimals = [];
 let uniqueKeywordsArr = [];
+let dropdown = $('select');
+
 const Animal = function (description, horns, image_url, keyword, title) {
   this.description = description;
   this.horns = horns;
@@ -21,8 +23,9 @@ Animal.prototype.renderWithJquery = function(){
   $newSection.find('#horns').text(this.horns);
   $('main').append($newSection);
 }
+
 function renderDropDown(){
-  let dropdown = $('select');
+  // let dropdown = $('select');
   uniqueKeywords();
   // creating the options in thedropdown
   for(let i = 0; i < uniqueKeywordsArr.length; i ++){
@@ -32,8 +35,7 @@ function renderDropDown(){
     }));
   }
 }
-// dropdown.append($('<option></option>').attr('value', value.keyword).text(value.keyword));
-// dropdown.append('<option value=' + uniqueKeywordsArr[i] + 'selected = "selected">' + uniqueKeywordsArr[i].keyword + '</option>');
+
 function uniqueKeywords(){
   for(let i=0; i < allAnimals.length; i++){
     if(!uniqueKeywordsArr.includes(allAnimals[i].keyword)){
@@ -55,4 +57,28 @@ const getAllAnimalsFromFile = () => {
     renderDropDown();
   })
 }
+
+
 getAllAnimalsFromFile();
+
+$(function(){
+  let optionItems = $('select');
+  optionItems.on('click', function(e){
+    console.log('you clicked ' + this.value)
+
+    // let userClicked = this.value;
+    let userClicked = '';
+
+    for(let i = 0; i < uniqueKeywordsArr.length; i++){
+      if (this.value === uniqueKeywordsArr[i]){
+        userClicked = uniqueKeywordsArr[i];
+      }
+    }
+
+    $('img').removeAttr('src');
+    $('h2').remove();
+    $('p').remove();
+
+
+  })
+})
