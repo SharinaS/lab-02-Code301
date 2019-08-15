@@ -12,7 +12,7 @@ h2 {
     height: 200px;
   }
   
-  section {
+  main {
     float: left;
     vertical-align: center;
   }
@@ -22,7 +22,7 @@ h2 {
     margin: auto;
   }
   
-  #animal-template {
+  /* #animal-template {
     width: 0px;
     height: 0px;
-  }
+  } */
