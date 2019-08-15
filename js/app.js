@@ -1,5 +1,6 @@
 'use strict';
 const allAnimals = [];
+const allAnimalsTwo = [];
 let uniqueKeywordsArr = [];
 let dropdown = $('select');
 
@@ -9,7 +10,7 @@ const Animal = function (description, horns, image_url, keyword, title) {
   this.image_url = image_url;
   this.keyword = keyword;
   this.title = title;
-  allAnimals.push(this);
+  // allAnimals.push(this);
 };
 
 Animal.prototype.renderWithJquery = function(){
@@ -47,10 +48,11 @@ function uniqueKeywords(){
 }
 // Ajax //
 const getAllAnimalsFromFile = () => {
+  $('option').hide();
   $.get('data/page-1.json').then(animals => {
     console.log('animals from the .then', animals);
     animals.forEach(eachAnimal => {
-      new Animal(eachAnimal.description, eachAnimal.horns, eachAnimal.image_url, eachAnimal.keyword, eachAnimal.title);
+      allAnimals.push(new Animal(eachAnimal.description, eachAnimal.horns, eachAnimal.image_url, eachAnimal.keyword, eachAnimal.title));
     })
     allAnimals.forEach(animal => {
       animal.renderWithJquery();
@@ -59,8 +61,24 @@ const getAllAnimalsFromFile = () => {
   })
 }
 
+// Ajax for data page 2//
+const getAllAnimalsFromFileTwo = () => {
+  $('option').hide();
+  $.get('data/page-2.json').then(animals => {
+    console.log('animals from the .then', animals);
+    animals.forEach(eachAnimal => {
+      allAnimalsTwo.push(new Animal(eachAnimal.description, eachAnimal.horns, eachAnimal.image_url, eachAnimal.keyword, eachAnimal.title));
+    })
+    allAnimalsTwo.forEach(animal => {
+      animal.renderWithJquery();
+    })
+    
+    renderDropDown();
+  })
+}
 
 getAllAnimalsFromFile();
+
 
 $(function(){
   let optionItems = $('select');
@@ -68,9 +86,29 @@ $(function(){
     console.log('you clicked ' + this.value)
     let clicked = this.value;
     console.log('let clicked is', clicked) 
-    $('section').hide();  
+    $('section').hide();
 
     console.log('parent is', $(`p:contains(${clicked})`).parent());
     $(`p:contains(${clicked})`).parent().show();
+  })
+})
+
+
+$(function(){
+  let pageItems = $('div');
+  pageItems.on('click', function(event){   
+    console.log('you clicked the div')
+    let clicked = event.target.text;
+    console.log('let clicked div is', clicked) 
+    $('section').hide();  
+
+    if (clicked == '2'){
+      $('section').hide();  
+      getAllAnimalsFromFileTwo();
+    } else if (clicked == '1'){
+      $('section').hide();  
+      getAllAnimalsFromFile();
+    }
+    
   })
 })
