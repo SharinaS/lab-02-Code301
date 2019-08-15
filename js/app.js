@@ -11,6 +11,7 @@ const Animal = function (description, horns, image_url, keyword, title) {
   this.title = title;
   allAnimals.push(this);
 };
+
 Animal.prototype.renderWithJquery = function(){
   const $myTemplate = $('#animal-template');
   const myTemplateHtml = $myTemplate.html();
@@ -63,22 +64,13 @@ getAllAnimalsFromFile();
 
 $(function(){
   let optionItems = $('select');
-  optionItems.on('click', function(e){
+  optionItems.on('change', function(){   
     console.log('you clicked ' + this.value)
+    let clicked = this.value;
+    console.log('let clicked is', clicked) 
+    $('section').hide();  
 
-    // let userClicked = this.value;
-    let userClicked = '';
-
-    for(let i = 0; i < uniqueKeywordsArr.length; i++){
-      if (this.value === uniqueKeywordsArr[i]){
-        userClicked = uniqueKeywordsArr[i];
-      }
-    }
-
-    $('img').removeAttr('src');
-    $('h2').remove();
-    $('p').remove();
-
-
+    console.log('parent is', $(`p:contains(${clicked})`).parent());
+    $(`p:contains(${clicked})`).parent().show();
   })
 })
