@@ -5,11 +5,31 @@ h2 {
   
  section > * {
     width: 200px;
-    margin: 10px;
+    box-sizing: border-box;
+  }
+
+  section {
+    border: 1px groove black;
+    background-color: antiquewhite;
+    text-align: center;
+    margin: 4px; 
   }
     
 main {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    justify-content: center;
 }
+
+#pagination {
+  display: block;
+  background-color: yellow;
+}
+
+#pagination > a {
+  border: 1px solid black;
+  padding: 8px;
+  border-radius: 4px;
+}
+
