@@ -3,7 +3,8 @@
 const allAnimals = [];
 const allAnimalsTwo = [];
 let uniqueKeywordsArr = [];
-let dropdown = $('select');
+let picDropdown = $('#pic-selector');
+let selectByDropdown = $('#select-by');
 
 const Animal = function (description, horns, image_url, keyword, title) {
   this.description = description;
@@ -13,24 +14,30 @@ const Animal = function (description, horns, image_url, keyword, title) {
   this.title = title;
 };
 
-Animal.prototype.renderWithJquery = function(){
+Animal.prototype.renderWithHandlebars = function(){
   const myTemplateHtml = $('#entry-template').html();
   const renderAnimalsWithHandlebars = Handlebars.compile(myTemplateHtml);
   const animalHtml = renderAnimalsWithHandlebars(this);
   $('main').append(animalHtml);
 }
 
+function renderSelectByDropdown(){
+  selectByDropdown.append($('<option>', 'hello'))
+}
+
 function renderDropDown(){
-  // let dropdown = $('select');
   uniqueKeywords();
+  renderSelectByDropdown();
   // creating the options in thedropdown
   for(let i = 0; i < uniqueKeywordsArr.length; i ++){
-    dropdown.append($('<option>', {
+    picDropdown.append($('<option>', {
       value: uniqueKeywordsArr[i],
       text: uniqueKeywordsArr[i]
     }));
   }
 }
+
+
 
 function uniqueKeywords(){
   for(let i=0; i < allAnimals.length; i++){
@@ -49,7 +56,7 @@ const getAllAnimalsFromFile = () => {
       allAnimals.push(new Animal(eachAnimal.description, eachAnimal.horns, eachAnimal.image_url, eachAnimal.keyword, eachAnimal.title));
     })
     allAnimals.forEach(animal => {
-      animal.renderWithJquery();
+      animal.renderWithHandlebars();
     })
     renderDropDown();
   })
@@ -64,7 +71,7 @@ const getAllAnimalsFromFileTwo = () => {
       allAnimalsTwo.push(new Animal(eachAnimal.description, eachAnimal.horns, eachAnimal.image_url, eachAnimal.keyword, eachAnimal.title));
     })
     allAnimalsTwo.forEach(animal => {
-      animal.renderWithJquery();
+      animal.renderWithHandlebars();
     })
     renderDropDown();
   })
@@ -102,6 +109,5 @@ $(function(){
       $('section').hide();  
       getAllAnimalsFromFile();
     }
-    
   })
 })
