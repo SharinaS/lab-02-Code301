@@ -1,10 +1,17 @@
 'use strict';
 
-const allAnimals = [];
-const allAnimalsTwo = [];
-let uniqueKeywordsArr = [];
-let picDropdown = $('#pic-selector');
-let selectByDropdown = $('#select-by');
+// Problems:
+// 1. Repeat clicks on page 1 adds another round of keywords shown in dropdown menu
+// 2. Clicking on page 2 does not change the pulldown menu options to keywords for page 2.
+// 3. There is no sorting available yet for title or number of horns.
+
+let allAnimals = [];
+let allAnimalsTwo = [];
+
+let uniqueKeywordsForAllAnimals = [];
+
+
+let picDropdown = $('#pic-selector'); 
 
 const Animal = function (description, horns, image_url, keyword, title) {
   this.description = description;
@@ -14,6 +21,9 @@ const Animal = function (description, horns, image_url, keyword, title) {
   this.title = title;
 };
 
+// === Prototype Function ===
+
+// Renders renders the pictures into main via Handlebars
 Animal.prototype.renderWithHandlebars = function(){
   const myTemplateHtml = $('#entry-template').html();
   const renderAnimalsWithHandlebars = Handlebars.compile(myTemplateHtml);
@@ -21,50 +31,55 @@ Animal.prototype.renderWithHandlebars = function(){
   $('main').append(animalHtml);
 }
 
-function renderSelectByDropdown(){
-  selectByDropdown.append($('<option>', 'hello'))
+// === Functions ===
+
+function uniqueKeywords(){
+  for(let i = 0; i < allAnimals.length; i++){
+    if(!uniqueKeywordsForAllAnimals.includes(allAnimals[i].keyword)){
+      uniqueKeywordsForAllAnimals.push(allAnimals[i].keyword);
+    }
+  }
+  return uniqueKeywordsForAllAnimals;
 }
 
+// Renders keywords and puts keywords in array
 function renderDropDown(){
   uniqueKeywords();
-  renderSelectByDropdown();
-  // creating the options in thedropdown
-  for(let i = 0; i < uniqueKeywordsArr.length; i ++){
+
+  for(let i = 0; i < uniqueKeywordsForAllAnimals.length; i ++){
     picDropdown.append($('<option>', {
-      value: uniqueKeywordsArr[i],
-      text: uniqueKeywordsArr[i]
+      // value: uniqueKeywordsArr[i],
+      text: uniqueKeywordsForAllAnimals[i]
     }));
   }
 }
 
 
-
-function uniqueKeywords(){
-  for(let i=0; i < allAnimals.length; i++){
-    if(!uniqueKeywordsArr.includes(allAnimals[i].keyword)){
-      uniqueKeywordsArr.push(allAnimals[i].keyword);
-    }
-  }
-  return uniqueKeywordsArr;
-}
-// Ajax //
+// Ajax for page 1
 const getAllAnimalsFromFile = () => {
-  $('option').hide();
+  // keep the images from page 1 from duplicating each time page 1 is rendered
+  allAnimals = [];
+
   $.get('data/page-1.json').then(animals => {
-    console.log('animals from the .then', animals);
+    //console.log('animals from the .then', animals);
+
     animals.forEach(eachAnimal => {
       allAnimals.push(new Animal(eachAnimal.description, eachAnimal.horns, eachAnimal.image_url, eachAnimal.keyword, eachAnimal.title));
     })
     allAnimals.forEach(animal => {
       animal.renderWithHandlebars();
     })
+
     renderDropDown();
   })
 }
 
 // Ajax for data page 2//
 const getAllAnimalsFromFileTwo = () => {
-  $('option').hide();
+
+  // keep the images from duplicating each time page 2 is rendered.
+  allAnimalsTwo = [];
+
   $.get('data/page-2.json').then(animals => {
     console.log('animals from the .then', animals);
     animals.forEach(eachAnimal => {
@@ -73,41 +88,47 @@ const getAllAnimalsFromFileTwo = () => {
     allAnimalsTwo.forEach(animal => {
       animal.renderWithHandlebars();
     })
-    renderDropDown();
+
+    //renderDropDown();
   })
 }
 
-getAllAnimalsFromFile();
+// === Event Handlers ===
 
 
 $(function(){
   let optionItems = $('select');
   optionItems.on('change', function(){   
-    console.log('you clicked ' + this.value)
+    //console.log('you clicked ' + this.value)
     let clicked = this.value;
-    console.log('let clicked is', clicked) 
+    //console.log('let clicked is', clicked) 
     $('section').hide();
 
-    console.log('parent is', $(`p:contains(${clicked})`).parent());
+    //console.log('parent is', $(`p:contains(${clicked})`).parent());
     $(`p:contains(${clicked})`).parent().show();
   })
 })
 
-
+// identifying page being clicked on
 $(function(){
-  let pageItems = $('div');
-  pageItems.on('click', function(event){   
-    console.log('you clicked the div')
+  let pageChoice = $('#pagination');
+  pageChoice.on('click', function(event){   
+    
     let clicked = event.target.text;
-    console.log('let clicked div is', clicked) 
-    $('section').hide();  
+    //console.log('let clicked div is', clicked)
 
-    if (clicked == '2'){
-      $('section').hide();  
+    if (clicked === '2'){
+      $('section').hide(); 
+
       getAllAnimalsFromFileTwo();
-    } else if (clicked == '1'){
-      $('section').hide();  
+
+    } else if (clicked === '1'){
+      $('section').hide(); 
       getAllAnimalsFromFile();
     }
   })
 })
+
+
+// === Executable Code ===
+getAllAnimalsFromFile(); // loads page one when user refreshes app
